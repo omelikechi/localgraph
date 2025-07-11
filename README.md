@@ -1,7 +1,6 @@
-# Local graph estimation with pathwise feature selection (PFS)
+# Local graph estimation with pathwise feature selection
 
-> **Local graph estimation** is a framework for discovering local graph/network structure around specific variables of interest.  
-> **Pathwise feature selection (PFS)** is an algorithm for performing local graph estimation with pathwise false discovery control.
+> **Local graph estimation** is a framework for discovering local graph/network structure around specific variables of interest. **Pathwise feature selection (PFS)** is an algorithm for performing local graph estimation with pathwise false discovery control.
 
 ## Associated paper
 
@@ -39,7 +38,7 @@ plot_graph(graph=Q, target_features=target_features, radius=max_radius)
 ```
 
 ### Outputs
-- `Q`: Dictionary mapping edges `(i,j)` to q-values. Edges are undirected, so both `(i,j)` and `(j,i)` are included.
+- `Q`: Dictionary mapping edges `(i,j)` to q-values. Edges are undirected, so `(i,j)` and `(j,i)` are included.
 
 ### What PFS does
 - Expands the local graph outward from the targets, layer by layer, up to `max_radius`.
@@ -117,7 +116,7 @@ The `evaluation/` folder contains helper functions for measuring subgraph recove
   - `subgraph_within_radius`: Extract true subgraph around a target node (useful for identifying subgraphs within full graphs)
   - `tp_and_fp`: Count true and false positives compared to ground truth
 
-These are useful for benchmarking PFS and other graph estimation methods when the true graph is known, e.g., in simulation studies.
+These are useful for benchmarking PFS and other graph estimation methods when the true graph is known.
 
 
 
