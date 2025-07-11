@@ -1,5 +1,0 @@
-ipss
-matplotlib
-networkx
-numpy
-scikit-learn
