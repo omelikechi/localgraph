@@ -41,9 +41,9 @@ plot_graph(graph=Q, target_features=target_features, radius=max_radius)
 - `Q`: Dictionary mapping edges `(i,j)` to q-values. Edges are undirected, so `(i,j)` and `(j,i)` are included.
 
 ### What PFS does
-- Expands the local graph outward from the targets, layer by layer, up to `max_radius`.
-- Uses [**integrated path stability selection**](https://github.com/omelikechi/ipss) at each node in a new layer to perform nonparametric feature selection with FDR control.
-- Only includes a new node if any path from a target has cumulative q-value ≤ `qpath_max`, ensuring control of pathwise false discoveries.
+- Expands the local graph outward, layer by layer, starting from target variables.
+- Performs neighborhood selection with FDR control using [**integrated path stability selection**](https://github.com/omelikechi/ipss).
+- Controls pathwise false discoveries by summing q-values along candidate paths.
 
 ## Full list of `pfs` arguments
 
