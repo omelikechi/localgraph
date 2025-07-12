@@ -98,7 +98,7 @@ The function returns a dictionary containing:
 - `positions`: Dictionary of node coordinates.
 - `figure`: The matplotlib figure object (only if the function creates the figure).
 
-### Further customizing graph layout
+### Further customization
 
 To manually adjust node positions for publication-quality figures, you can export graphs to [**Gephi**](https://gephi.org/), edit them interactively, and re-import the updated layout into Python. See: [gephi_instructions.md](./gephi_instructions.md) for a full walkthrough.
 
