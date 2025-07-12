@@ -42,7 +42,7 @@ plot_graph(graph=Q, target_features=target_features, radius=max_radius)
 
 ### What PFS does
 - Expands the local graph outward from the targets, layer by layer, up to `max_radius`.
-- Uses [**integrated path stability selection**](https://github.com/omelikechi/ipss) to perform nonparametric neighborhood estimation with FDR control.
+- Uses [**integrated path stability selection**](https://github.com/omelikechi/ipss) at each node in a new layer to perform nonparametric feature selection with FDR control.
 - Only includes a new node if any path from a target has cumulative q-value ≤ `qpath_max`, ensuring control of pathwise false discoveries.
 
 ## Full list of `pfs` arguments
@@ -113,8 +113,8 @@ The `examples/` folder contains scripts that demonstrate end-to-end usage:
 The `evaluation/` folder contains helper functions for measuring subgraph recovery in simulation settings.
 
 - The `eval.py` script contains two functions:
-  - `subgraph_within_radius`: Extract true subgraph around a target node (useful for identifying subgraphs within full graphs)
-  - `tp_and_fp`: Count true and false positives compared to ground truth
+	- `subgraph_within_radius`: Extract true subgraph around a target node (useful for identifying subgraphs within full graphs)
+	- `tp_and_fp`: Count true and false positives compared to ground truth
 
 These are useful for benchmarking PFS and other graph estimation methods when the true graph is known.
 
