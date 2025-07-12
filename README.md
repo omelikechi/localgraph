@@ -42,7 +42,7 @@ plot_graph(graph=Q, target_features=target_features, radius=max_radius)
 
 ### What PFS does
 - Expands the local graph outward from the targets, layer by layer, up to `max_radius`.
-- At each step, estimates node neighborhoods with FDR control using [**IPSS**](https://github.com/omelikechi/ipss).
+- Uses [**integrated path stability selection**](https://github.com/omelikechi/ipss) to perform nonparametric neighborhood estimation with FDR control.
 - Only includes a new node if any path from a target has cumulative q-value ≤ `qpath_max`, ensuring control of pathwise false discoveries.
 
 ## Full list of `pfs` arguments
