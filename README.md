@@ -89,7 +89,7 @@ plot_graph(graph=Q, target_features=target_features, radius=3)
 - Integration with custom plots via `ax` or `pos`
 - Optional saving of figures (`save_fig`) and graphs (`save_graph`)
 
-For a full list of arguments, see the [`plot_graph` docstring](./localgraph/plotting/plot_graph.py).
+For a full list of arguments, see the [`plot_graph`](./localgraph/plotting/plot_graph.py) docstring.
 
 ### Returns
 The function returns a dictionary containing:
