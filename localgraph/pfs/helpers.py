@@ -2,7 +2,6 @@
 
 import heapq
 
-
 def lightest_paths(Q, target_features, new_features):
 	"""
 	Computes the lightest path (minimum cumulative q-value) from any target feature 
@@ -71,6 +70,9 @@ def prune_graph(Q, target_features, qpath_max, fdr_local, max_radius, custom_nbh
 	Q_pruned : dict
 		Dictionary of pruned edges (i,j) with their corresponding q-values.
 	"""
+
+	if not Q:
+		return {}
 
 	Q_pruned = {}
 
