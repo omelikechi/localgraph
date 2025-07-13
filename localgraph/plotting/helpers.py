@@ -21,7 +21,7 @@ def assign_node_colors(G, target_features, n_layers, colors=None):
 	standout_color = 'yellow'
 	default_colors = generate_colors(n_layers)
 	shortest_paths_from_roots = {
-		r: nx.single_source_shortest_path_length(G,r) for r in target_features
+		r: nx.single_source_shortest_path_length(G,r) for r in target_features if r in G
 	}
 
 	for node in G.nodes():

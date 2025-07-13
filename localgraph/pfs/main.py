@@ -55,7 +55,6 @@ def pfs(X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd
 			print(f'current features: {current_features} (radius = {radius + 1}/{max_radius})')
 
 		cutoff = fdr_local[radius]
-		fdr_same_layer = cutoff if radius == 0 else fdr_local[radius - 1]
 
 		new_features = set()
 
@@ -87,14 +86,16 @@ def pfs(X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd
 				# reindex feature to account for deletion of current feature in X_minus_current
 				feature_idx = feature_idx if feature_idx < current else feature_idx + 1
 
-				current_cutoff = cutoff
-				# check for custom fdr cutoffs
 				if customize:
-					current_cutoff = current_custom_nbhd['nbhd_fdr']
-					for string, custom_fdr in custom_nbhd[current_feature_name].items():
+					# start with user-specified neighborhood fdr threshold
+					current_cutoff = current_custom_nbhd.get('nbhd_fdr', cutoff)
+					# override if any matching keyword is in the neighbor feature name
+					for string, custom_fdr in current_custom_nbhd.items():
 						if string != 'nbhd_fdr' and string in feature_names[feature_idx]:
 							current_cutoff = custom_fdr
 							break
+				else:
+					current_cutoff = cutoff
 
 				# update if feature is entirely new
 				if q_value <= current_cutoff and feature_idx not in all_visited:
@@ -103,11 +104,11 @@ def pfs(X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd
 
 				# update if feature in same layer as current
 				elif feature_idx in current_features:
-					if q_value <= fdr_same_layer:
+					if q_value <= current_cutoff:
 						if (feature_idx, current) not in Q:
 							Q[(current, feature_idx)] = Q[(feature_idx, current)] = q_value
 						elif Q[(feature_idx, current)] > q_value:
-							Q[(current, feature_idx)] = Q[(feature_idx, current)] = q_value						
+							Q[(current, feature_idx)] = Q[(feature_idx, current)] = q_value					
 
 				# update edge with minimum q-value if criterion is 'min'
 				elif q_value <= current_cutoff and criterion == 'min':
@@ -124,7 +125,7 @@ def pfs(X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd
 		radius += 1
 
 	# Compute final Q by applying pathwise threshold qpath_max
-	Q = prune_graph(Q, target_features, qpath_max, fdr_local, max_radius)
+	Q = prune_graph(Q, target_features, qpath_max, fdr_local, max_radius, custom_nbhd=custom_nbhd, feature_names=feature_names)
 
 	return Q
 
