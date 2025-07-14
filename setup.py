@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
 	name='localgraph',
-	version='0.1.0',
+	version='0.1.1',
 	author='Omar Melikechi',
 	author_email='omar.melikechi@gmail.com',
 	description='Local graph estimation with pathwise feature selection',
