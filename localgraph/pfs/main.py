@@ -1,5 +1,7 @@
 # Pathwise feature selection (PFS)
 
+import time
+
 from ipss import ipss
 import numpy as np
 
@@ -27,10 +29,12 @@ def pfs(X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd
 		verbose: whether to print progress during selection
 
 	Outputs:
-		A dictionary containing:
-			- 'Q': dict mapping edge tuples to q-values
-			- 'A': adjusted sparse adjacency matrix (dict of dicts or matrix)
+		Q: dict mapping edge tuples to q-values
 	"""
+
+	if verbose:
+		print(f'Starting PFS')
+		print(f'--------------------------------')
 
 	if fdr_local is None:
 		fdr_local = [qpath_max] * max_radius
@@ -61,8 +65,7 @@ def pfs(X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd
 		for current in current_features:
 
 			if verbose:
-				print(f' - iteration {ipss_iteration}/{len(current_features)}')
-				ipss_iteration += 1
+				start = time.time()
 
 			# current custom neighborhood
 			customize = False
@@ -116,6 +119,11 @@ def pfs(X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd
 						Q[(current, feature_idx)] = Q[(feature_idx, current)] = q_value
 					elif Q[(feature_idx, current)] > q_value:
 						Q[(current, feature_idx)] = Q[(feature_idx, current)] = q_value
+
+			if verbose:
+				runtime = time.time() - start
+				print(f' - iteration {ipss_iteration}/{len(current_features)} ({runtime:.2f} seconds)')
+				ipss_iteration += 1
 
 		q_paths = lightest_paths(Q, target_features, new_features)
 		new_features = {idx for idx, q_value_sum in q_paths.items() if q_value_sum <= qpath_max}
