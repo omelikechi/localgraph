@@ -11,7 +11,7 @@ from .helpers import assign_node_colors, generate_colors
 def plot_graph(
 	graph, target_features, radius, feature_names=None, true_graph=None,
 	graph_layout='kk', node_size=1500, font_size=10, edge_font_size=None, edge_digits=2, edge_widths=1, colors=None,
-	show_weights=True, include_outer_edges=False, figsize=(16,8), ax=None, pos=None,
+	show_weights=True, include_outer_edges=False, show_isolated_targets='top right', figsize=(16,8), ax=None, pos=None,
 	save_fig=False, save_graph=False, graph_name=None, dpi=300
 ):
 	"""
@@ -90,6 +90,12 @@ def plot_graph(
 				if node not in node_distances or dist < node_distances[node]:
 					node_distances[node] = dist
 
+	# include isolated target nodes
+	for root in target_features:
+		reachable_nodes.add(root)
+		if root not in node_distances:
+			node_distances[root] = 0
+
 	# Remove edges between outermost nodes if requested
 	if not include_outer_edges:
 		outer_nodes = {node for node, dist in node_distances.items() if dist == radius}
@@ -98,9 +104,11 @@ def plot_graph(
 	# Create subgraph
 	G = G.subgraph(reachable_nodes).copy()
 
-	if G.number_of_nodes() == 0:
-		print("Empty graph: All root nodes are isolated.")
-		return
+	# add isolated target nodes to G
+	for root in target_features:
+		if root not in G:
+			G.add_node(root)
+			node_distances[root] = 0
 
 	# Handle plotting
 	own_figure = False
@@ -126,6 +134,19 @@ def plot_graph(
 			pos = nx.spring_layout(G, weight=None)
 		else:
 			raise ValueError(f"Unsupported graph format: {graph_layout}")
+
+	# Manually move isolated target nodes to outskirts
+	if show_isolated_targets:
+		isolated_targets = [root for root in target_features if G.degree(root) == 0]
+		min_x = min(x for x, y in pos.values())
+		max_x = max(x for x, y in pos.values())
+		min_y = min(y for x, y in pos.values())
+		max_y = max(y for x, y in pos.values())
+		spacing = 0.2  # spacing between multiple isolated target nodes
+		x_shift = max_x - 0.1 if 'right' in show_isolated_targets else min_x + 0.1
+		y_shift = max_y - 0.1 if 'top' in show_isolated_targets else min_y + 0.1	
+		for i, root in enumerate(isolated_targets):
+			pos[root] = (x_shift + i * spacing, y_shift + i * spacing)
 
 	# Assign node colors
 	node_color = assign_node_colors(G, target_features, radius, colors=colors)
@@ -224,6 +245,7 @@ def plot_graph(
 			G.nodes[node]['x'] = float(x)
 			G.nodes[node]['y'] = float(y)
 		nx.write_graphml(G, f'{graph_name}.graphml')
+		print(f'Graph saved as {graph_name}.graphml')
 
 	result = {'feature_radius_list':feature_radius_list, 'graph':G, 'positions':pos}
 	if own_figure:

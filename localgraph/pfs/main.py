@@ -113,7 +113,7 @@ def pfs(X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd
 						elif Q[(feature_idx, current)] > q_value:
 							Q[(current, feature_idx)] = Q[(feature_idx, current)] = q_value					
 
-				# update edge with minimum q-value if criterion is 'min'
+				# update previously estimated edge with minimum q-value if criterion is 'min'
 				elif q_value <= current_cutoff and criterion == 'min':
 					if (feature_idx, current) not in Q:
 						Q[(current, feature_idx)] = Q[(feature_idx, current)] = q_value
