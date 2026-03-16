@@ -7,8 +7,11 @@ import numpy as np
 
 from .helpers import lightest_paths, prune_graph
 
-def pfs(X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd=None, feature_names=None, 
-	criterion='min', selector='gb', ipss_args=None, verbose=False):
+def pfs(
+	# data and local graph args
+	X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd=None, feature_names=None, 
+	# q-value selector args
+	qvalue_method=ipss, method_args=None, criterion='min', verbose=False):
 	"""
 	Inputs:
 		Required
@@ -23,9 +26,9 @@ def pfs(X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd
 		fdr_local: neighborhood FDR threshold at each radius (list of length max_radius)
 		custom_nbhd: dictionary of custom neighborhood FDR thresholds for user-specified features
 		feature_names: names of the features, used if custom_nbhd is provided
-		criterion:
-		selector: base method for computing q-values
-		ipss_args: additional arguments passed to the IPSS function
+		qvalue_method: a method for computing q-values
+		method_args: additional arguments passed to qvalue_method
+		criterion: rule for updating edges that were previously estimated
 		verbose: whether to print progress during selection
 
 	Outputs:
@@ -39,12 +42,11 @@ def pfs(X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd
 	if fdr_local is None:
 		fdr_local = [qpath_max] * max_radius
 
-	if ipss_args is None:
-		ipss_args = {}
-	ipss_args['selector'] = selector
-
 	if isinstance(target_features, int):
 		target_features = [target_features]
+
+	if method_args is None:
+		method_args = {}
 
 	current_features = set(target_features)
 	all_visited = set(target_features)
@@ -54,7 +56,6 @@ def pfs(X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd
 	while current_features and radius < max_radius:
 
 		if verbose:
-			n_current = len(current_features)
 			ipss_iteration = 1
 			print(f'current features: {current_features} (radius = {radius + 1}/{max_radius})')
 
@@ -80,9 +81,8 @@ def pfs(X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd
 
 			# compute q-values
 			X_minus_current = np.delete(X, current, axis=1)
-			result = ipss(X_minus_current, X[:,current], **ipss_args)
+			result = qvalue_method(X_minus_current, X[:,current], **method_args)
 
-			efp_scores = result['efp_scores']
 			q_values = result['q_values']
 
 			for feature_idx, q_value in q_values.items():

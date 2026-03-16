@@ -58,12 +58,8 @@ plot_graph(graph=Q, target_features=target_features, radius=max_radius)
 - `custom_nbhd`: Dictionary specifying custom FDR cutoffs for certain features (dict; default `None`).
 - `feature_names`: List of feature names; required if `custom_nbhd` is provided (list of strings).
 - `criterion`: Rule for resolving multiple edges (default `'min'`).
-- `selector`: Feature importance method used by IPSS (str; default `'gb'`). Options:
-	- `'gb'`: Gradient boosting
-	- `'l1'`: L1-regularized regression (lasso)
-	- `'rf'`: Random forest
-	- Custom function (see `ipss_args`)
-- `ipss_args`: Dictionary of arguments to pass to `ipss` (dict; default `None`)
+- `qvalue_method`: A method for computing q-values (function)
+- `method_args`: Dictionary of arguments to pass to `qvalue_method` (dict; default `None`)
 - `verbose`: Whether to print progress during selection (bool; default `False`)
 
 ## Graph plotting
