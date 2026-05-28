@@ -4,8 +4,8 @@
 
 ## Associated paper
 
-- **Local graph estimation: Interpretable network discovery for complex data**  
-	[Nature Communications](https://doi.org/10.1038/s41467-026-72796-9) • [arXiv](https://doi.org/10.48550/arXiv.2507.17172)
+- **Local graph estimation with pathwise false discovery control**  
+	[*Nature Communications*](https://doi.org/10.1038/s41467-026-72796-9) ● [[arXiv]](https://doi.org/10.48550/arXiv.2507.17172)
 
 ## Installation
 ```
