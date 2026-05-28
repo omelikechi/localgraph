@@ -9,9 +9,9 @@ from .helpers import lightest_paths, prune_graph
 
 def pfs(
 	# data and local graph args
-	X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd=None, feature_names=None, 
+	X, target_features, qpath_max, max_radius=3, fdr_local=None, custom_nbhd=None, feature_names=None,
 	# q-value selector args
-	qvalue_method=ipss, method_args=None, criterion='min', verbose=False):
+	qvalue_method=ipss, method_args=None, n_jobs=-1, criterion='min', verbose=False):
 	"""
 	Inputs:
 		Required
@@ -28,6 +28,8 @@ def pfs(
 		feature_names: names of the features, used if custom_nbhd is provided
 		qvalue_method: a method for computing q-values
 		method_args: additional arguments passed to qvalue_method
+		n_jobs: number of cores to use for parallel computation (default -1 uses all available cores);
+			passed to qvalue_method and has no effect for custom methods that do not support n_jobs
 		criterion: rule for updating edges that were previously estimated
 		verbose: whether to print progress during selection
 
@@ -47,6 +49,9 @@ def pfs(
 
 	if method_args is None:
 		method_args = {}
+
+	if 'n_jobs' not in method_args:
+		method_args['n_jobs'] = n_jobs
 
 	current_features = set(target_features)
 	all_visited = set(target_features)

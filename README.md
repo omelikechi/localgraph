@@ -5,7 +5,7 @@
 ## Associated paper
 
 - **Local graph estimation: Interpretable network discovery for complex data**  
-	In preparation
+	[Nature Communications](https://doi.org/10.1038/s41467-026-72796-9) • [arXiv](https://doi.org/10.48550/arXiv.2507.17172)
 
 ## Installation
 ```
@@ -30,7 +30,7 @@ max_radius = 3
 # Optional: specify the neighborhood FDR thresholds for nodes in each radius
 fdr_local = [0.2, 0.1, 0.1]
 
-# Run PFS
+# Run PFS (uses all available cores by default; set n_jobs=1 to disable parallelism)
 Q = pfs(X, target_features, qpath_max=qpath_max, max_radius=max_radius, fdr_local=fdr_local)
 
 # Plot the estimated subgraph
@@ -58,8 +58,9 @@ plot_graph(graph=Q, target_features=target_features, radius=max_radius)
 - `custom_nbhd`: Dictionary specifying custom FDR cutoffs for certain features (dict; default `None`).
 - `feature_names`: List of feature names; required if `custom_nbhd` is provided (list of strings).
 - `criterion`: Rule for resolving multiple edges (default `'min'`).
+- `n_jobs`: Number of cores to use for parallel computation (int; default `-1` uses all available cores). Passed directly to `qvalue_method`; has no effect for custom methods that do not support `n_jobs`. On machines with multiple cores this can substantially reduce runtime.
 - `qvalue_method`: A method for computing q-values (function)
-- `method_args`: Dictionary of arguments to pass to `qvalue_method` (dict; default `None`)
+- `method_args`: Dictionary of arguments to pass to `qvalue_method` (dict; default `None`). Any `n_jobs` key here takes precedence over the `n_jobs` argument.
 - `verbose`: Whether to print progress during selection (bool; default `False`)
 
 ## Graph plotting
@@ -108,18 +109,7 @@ The `examples/` folder contains scripts that demonstrate end-to-end usage:
 
 The `evaluation/` folder contains helper functions for measuring subgraph recovery in simulation settings.
 
-- The `eval.py` script contains two functions:
-	- `subgraph_within_radius`: Extract true subgraph around a target node (useful for identifying subgraphs within full graphs)
+- The `eval.py` script contains one function:
 	- `tp_and_fp`: Count true and false positives compared to ground truth
 
 These are useful for benchmarking PFS and other graph estimation methods when the true graph is known.
-
-
-
-
-
-
-
-
-
-

@@ -5,10 +5,9 @@ from collections import defaultdict, deque
 import numpy as np
 
 
+# compute connected component of a given node after target variables are removed
 def node_cluster(Q, anchor_node, target_features, feature_names=None, max_radius=None, remove_targets=True):
 	"""
-	Compute connected component of a given node after target variables are removed
-
 	Parameters
 	--------------------------------
 	Q : dict
@@ -65,6 +64,7 @@ def node_cluster(Q, anchor_node, target_features, feature_names=None, max_radius
 	return component
 
 
+# restrict to the local graph of radius 'max_radius' around a set of target features
 def restrict_to_local_graph(A, target_features, max_radius, return_matrix=False):
 
 	if isinstance(target_features, int):
